@@ -54,7 +54,7 @@ export default {
 <style scoped>
 .logout-button {
   margin-top: 20px; 
-  margin-left: 95px;
+  margin-left: 120px;
   width: 10%;
   position: fixed;    
   bottom: 20px;

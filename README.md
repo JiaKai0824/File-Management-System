@@ -48,3 +48,34 @@ Only Admin users can modify file permissions and delete files.
 Admins can create new users with different roles. Each user is assigned specific permissions, either to view or download files, depending on their role.
 
 Installation
+1. Clone the repository:
+Clone this repository to your local machine using Git.
+
+2. Backend Setup:
+Download and install XAMPP (or any other local server stack of your choice).
+Copy the entire contents of the backend_php folder into the htdocs directory of your XAMPP installation (usually located at C:/xampp/htdocs on Windows).
+
+3. Database Setup:
+Import the SQL file file_manager_db.sql into your MySQL database. You can do this using phpMyAdmin or any MySQL client.
+The database contains all the necessary tables and sample data for your project.
+
+4. To import via phpMyAdmin:
+Open phpMyAdmin (usually at http://localhost/phpmyadmin).
+Create a new database named file_manager_db.
+Import the file_manager_db.sql file into the newly created database.
+
+5. Frontend Setup
+Install Node.js and npm.
+Navigate to the project directory in your terminal and run: npm install
+After installation you can run the project with: npm run serve
+Open your browser and visit http://localhost:8080 to access the file management system.
+
+6. Authetication Login
+In the sql I have create a admin account 
+username: admin
+password: 123
+You may login and create your own account
+
+Thanks, Regards
+Lo Jia Kai
+Email:lojiakai@gmail.com
