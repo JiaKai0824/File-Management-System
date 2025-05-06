@@ -1,40 +1,21 @@
-// =========================================================
-// * Vue Material Dashboard - v1.5.2
-// =========================================================
-//
-// * Product Page: https://www.creative-tim.com/product/vue-material-dashboard
-// * Copyright 2024 Creative Tim (https://www.creative-tim.com)
-// * Licensed under MIT (https://github.com/creativetimofficial/vue-material-dashboard/blob/master/LICENSE.md)
-//
-// * Coded by Creative Tim
-//
-// =========================================================
-//
-// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import App from './App';
 
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from "vue";
-import VueRouter from "vue-router";
-import App from "./App";
+// Import routes from your routes file
+import routes from './routes/routes';
 
-// router setup
-import routes from "./routes/routes";
+// Import Vue Material and other plugins
+import GlobalComponents from './globalComponents';
+import GlobalDirectives from './globalDirectives';
+import Notifications from './components/NotificationPlugin';
+import MaterialDashboard from './material-dashboard';
+import Chartist from 'chartist';
 
-// Plugins
-import GlobalComponents from "./globalComponents";
-import GlobalDirectives from "./globalDirectives";
-import Notifications from "./components/NotificationPlugin";
-
-// MaterialDashboard plugin
-import MaterialDashboard from "./material-dashboard";
-
-import Chartist from "chartist";
-
-// configure router
+// Configure Vue Router
 const router = new VueRouter({
-  routes, // short for routes: routes
-  linkExactActiveClass: "nav-item active",
+  routes, // Routes configuration
+  linkExactActiveClass: 'nav-item active',
 });
 
 Vue.prototype.$Chartist = Chartist;
@@ -45,11 +26,11 @@ Vue.use(GlobalComponents);
 Vue.use(GlobalDirectives);
 Vue.use(Notifications);
 
-/* eslint-disable no-new */
+// Create and mount the Vue instance
 new Vue({
-  el: "#app",
+  el: '#app',
   render: (h) => h(App),
-  router,
+  router, // Inject the router into the Vue instance
   data: {
     Chartist: Chartist,
   },

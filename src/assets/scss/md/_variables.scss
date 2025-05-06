@@ -182,14 +182,9 @@ $component-active-bg: $brand-primary !default;
 
 //** Width of the `border` for generating carets that indicator dropdowns.
 $caret-width-base: 4px !default;
-//** Carets increase slightly in size for larger components.
+
 $caret-width-large: 5px !default;
 
-//== Tables
-//
-//## Customizes the `.table` component with basic values, each used across all table variations.
-
-//** Padding for `<th>`s and `<td>`s.
 $table-cell-padding: 8px !default;
 //** Padding for cells in `.table-condensed`.
 $table-condensed-cell-padding: 5px !default;
@@ -204,10 +199,6 @@ $table-bg-active: $table-bg-hover !default;
 
 //** Border color for table and cell borders.
 $table-border-color: #ddd !default;
-
-//== Buttons
-//
-//## For each of Bootstrap's buttons, define text, background and border color.
 
 $btn-font-weight: normal !default;
 

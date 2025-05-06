@@ -6,7 +6,7 @@
     role="alert"
     :class="[verticalAlign, horizontalAlign, alertType]"
     :style="customPosition"
-    data-notify-position="top-center"
+    data-notify-position="bottom-center"
   >
     <button
       type="button"
@@ -21,6 +21,7 @@
     <span data-notify="message" v-html="message"></span>
   </div>
 </template>
+
 <script>
 export default {
   name: "notification",
@@ -29,19 +30,15 @@ export default {
     icon: String,
     verticalAlign: {
       type: String,
-      default: "top",
+      default: "top", // default top alignment
     },
     horizontalAlign: {
       type: String,
-      default: "center",
+      default: "center", // default center alignment
     },
     type: {
       type: String,
-      default: "info",
-    },
-    timeout: {
-      type: Number,
-      default: 2500,
+      default: "info", // Default notification type
     },
     timestamp: {
       type: Date,
@@ -50,34 +47,23 @@ export default {
   },
   data() {
     return {
-      elmHeight: 0,
+      elmHeight: 0, // Store height of the notification element
     };
   },
   computed: {
-    hasIcon() {
-      return this.icon && this.icon.length > 0;
-    },
     alertType() {
-      return `alert-${this.type}`;
+      return `alert-${this.type}`; // dynamic class based on type
     },
     customPosition() {
-      let initialMargin = 20;
-      let alertHeight = this.elmHeight + 10;
-      let sameAlertsCount = this.$notifications.state.filter((alert) => {
-        return (
-          alert.horizontalAlign === this.horizontalAlign &&
-          alert.verticalAlign === this.verticalAlign &&
-          alert.timestamp <= this.timestamp
-        );
-      }).length;
-      let pixels = (sameAlertsCount - 1) * alertHeight + initialMargin;
-      let styles = {};
-      if (this.verticalAlign === "top") {
-        styles.top = `${pixels}px`;
-      } else {
-        styles.bottom = `${pixels}px`;
-      }
-      return styles;
+      
+      return {
+        position: "fixed",
+        top: "5%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        zIndex: 100,
+      };
+      
     },
   },
   methods: {
@@ -87,41 +73,29 @@ export default {
   },
   mounted() {
     this.elmHeight = this.$el.clientHeight;
-    if (this.timeout) {
-      setTimeout(this.close, this.timeout);
-    }
+
+    // Auto-close after 3 seconds
+    setTimeout(() => {
+      this.close();
+    }, 3000);
   },
 };
 </script>
+
 <style lang="scss" scoped>
-@media screen and (max-width: 991px) {
-  .alert {
-    width: auto !important;
-    margin: 0 10px;
-
-    &.left {
-      left: 0 !important;
-    }
-    &.right {
-      right: 0 !important;
-    }
-    &.center {
-      margin: 0 10px !important;
-    }
-  }
-}
-
 .alert {
   z-index: 100;
   cursor: pointer;
   position: absolute;
   width: 41%;
+  /* Centering notification by default */
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin: 0 auto;
 
   &.center {
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
     margin: 0 auto;
   }
   &.left {
@@ -130,5 +104,15 @@ export default {
   &.right {
     right: 20px;
   }
+
+  /* You can add your custom styles for the close button and icons here */
+  .close {
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .material-icons {
+    font-size: 24px;
+  }
+  
 }
 </style>

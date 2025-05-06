@@ -5,100 +5,72 @@
         <md-card>
           <md-card-header data-background-color="blue">
             <h4 class="title">File Management</h4>
-            <p class="category">Upload and manage files using Firebase</p>
-          </md-card-header>
-
-          <md-card-content>
-            <div class="md-layout md-gutter">
-              <div class="md-layout-item md-size-50">
-                <input type="file" @change="handleFileUpload" />
+            <p class="category">Upload and manage files</p>
+            </md-card-header>
+            <md-card-content>
+            <div class="md-layout md-gutter file-upload-wrapper">
+              <div class="md-layout-item md-size-100 md-small-size-100">
+                <div class="upload-area" @click="$refs.fileInput.click()">
+                  <md-icon class="upload-icon">cloud_upload</md-icon>
+                  <p class="upload-text">
+                    {{ selectedFile ? selectedFile.name : "Click to choose a file" }}
+                  </p>
+                  <input
+                    type="file"
+                    @change="handleFileUpload"
+                    ref="fileInput"
+                    class="hidden-file-input"
+                  />
+                </div>
               </div>
-              <div class="md-layout-item md-size-50">
-                <md-button class="md-raised md-primary" @click="uploadFile">Upload</md-button>
+              <div class="md-layout-item md-size-100 md-small-size-100 button-wrapper" >
+                <md-button
+                  class="md-raised md-primary upload-btn"
+                  @click="uploadFile"
+                  :disabled="!selectedFile"
+                >
+                  Upload
+                </md-button>
               </div>
             </div>
           </md-card-content>
         </md-card>
       </div>
 
-      <!-- Stats Cards showing file type counts -->
-      <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-        <stats-card data-background-color="green">
+      <!-- Stats Cards -->
+      <div
+        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25"
+        v-for="(count, index) in statCards"
+        :key="index"
+      >
+        <stats-card :data-background-color="count.color">
           <template slot="header">
-            <md-icon>photo_camera</md-icon>
+            <md-icon>{{ count.icon }}</md-icon>
           </template>
-
           <template slot="content">
-            <p class="category">Images</p>
-            <h3 class="title">{{ imageCount }}</h3>
-          </template>
-        </stats-card>
-      </div>
-      <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-        <stats-card data-background-color="blue">
-          <template slot="header">
-            <md-icon>video_library</md-icon>
-          </template>
-
-          <template slot="content">
-            <p class="category">Videos</p>
-            <h3 class="title">{{ videoCount }}</h3>
-          </template>
-        </stats-card>
-      </div>
-      <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-        <stats-card data-background-color="orange">
-          <template slot="header">
-            <md-icon>description</md-icon>
-          </template>
-
-          <template slot="content">
-            <p class="category">Documents</p>
-            <h3 class="title">{{ documentCount }}</h3>
-          </template>
-        </stats-card>
-      </div>
-      <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-25">
-        <stats-card data-background-color="red">
-          <template slot="header">
-            <md-icon>folder</md-icon>
-          </template>
-
-          <template slot="content">
-            <p class="category">Others</p>
-            <h3 class="title">{{ othersCount }}</h3>
+            <p class="category">{{ count.label }}</p>
+            <h3 class="title">{{ count.value }}</h3>
           </template>
         </stats-card>
       </div>
 
-      <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
-        <md-card>
-          <md-card-header data-background-color="orange">
-            <h4 class="title">Managing Files</h4>
-            <p class="category">A List of Uploaded Files</p>
-          </md-card-header>
-          <md-card-content>
-            <simple-table table-header-color="orange" :files="filteredFiles"></simple-table>
-          </md-card-content>
-        </md-card>
-      </div>
+
     </div>
   </div>
 </template>
 
 <script>
-import { StatsCard, SimpleTable } from "@/components";
+import { StatsCard } from "@/components";
 import axios from "axios";
 
 export default {
   components: {
     StatsCard,
-    SimpleTable,
+
   },
   data() {
     return {
       selectedFile: null,
-      message: "",
       files: [],
       imageCount: 0,
       videoCount: 0,
@@ -126,7 +98,6 @@ export default {
         filtered.sort((a, b) => {
           const aVal = a[this.sortKey];
           const bVal = b[this.sortKey];
-
           if (aVal < bVal) return this.sortAsc ? -1 : 1;
           if (aVal > bVal) return this.sortAsc ? 1 : -1;
           return 0;
@@ -135,6 +106,34 @@ export default {
 
       return filtered;
     },
+    statCards() {
+      return [
+        {
+          label: "Images",
+          value: this.imageCount,
+          color: "green",
+          icon: "photo_camera",
+        },
+        {
+          label: "Videos",
+          value: this.videoCount,
+          color: "blue",
+          icon: "video_library",
+        },
+        {
+          label: "Documents",
+          value: this.documentCount,
+          color: "orange",
+          icon: "description",
+        },
+        {
+          label: "Others",
+          value: this.othersCount,
+          color: "red",
+          icon: "folder",
+        },
+      ];
+    },
   },
   methods: {
     handleFileUpload(event) {
@@ -142,26 +141,40 @@ export default {
     },
     async uploadFile() {
       if (!this.selectedFile) return;
+
       const formData = new FormData();
       formData.append("file", this.selectedFile);
+
       try {
         const response = await axios.post(
           "http://localhost/file-management-system/upload.php",
           formData,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            headers: { "Content-Type": "multipart/form-data" },
           }
         );
-        this.message = response.data.message;
+
+        this.$notify({
+          message: "Upload Success",
+          type: "success",
+          position: "bottom-center",
+          timeout: 3000,
+        });
+
         this.fetchFiles();
-        this.selectedFile = null;
       } catch (error) {
-        this.message = "Upload failed: " + error.message;
+        this.$notify({
+          message: "Upload failed: " + error.message,
+          type: "error",
+          position: "bottom-center",
+          timeout: 3000,
+        });
+      } finally {
+        // Clear file input and selection
+        this.selectedFile = null;
+        this.$refs.fileInput.value = null;
       }
     },
-    
     async fetchFiles() {
       try {
         const response = await axios.get(
@@ -170,35 +183,36 @@ export default {
         this.files = response.data.files;
         this.updateFileTypeCounts();
       } catch (error) {
-        this.message = "Failed to fetch files: " + error.message;
+        this.$notify({
+          message: "Failed to fetch files: " + error.message,
+          type: "error",
+          position: "bottom-center",
+          timeout: 3000,
+        });
       }
     },
-
     updateFileTypeCounts() {
-      // Reset the counts before updating
       this.imageCount = 0;
       this.videoCount = 0;
       this.documentCount = 0;
       this.othersCount = 0;
 
-      // Count files by category
-      this.files.forEach(file => {
+      this.files.forEach((file) => {
         const fileType = file.type.toLowerCase();
-
-        // Image Types
         if (fileType.includes("image")) {
           this.imageCount++;
-        }
-        // Video Types
-        else if (fileType.includes("video")) {
+        } else if (fileType.includes("video")) {
           this.videoCount++;
-        }
-        // Document Types
-        else if (fileType === "application/pdf" || fileType === "application/msword" || fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        } else if (
+          fileType === "application/pdf" ||
+          fileType === "application/msword" ||
+          fileType ===
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+          fileType ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ) {
           this.documentCount++;
-        }
-        // Others
-        else {
+        } else {
           this.othersCount++;
         }
       });
@@ -206,3 +220,51 @@ export default {
   },
 };
 </script>
+<style scoped>
+.file-upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.upload-area {
+  width: 100%;
+  padding: 1.5rem;
+  border: 2px dashed #2196f3;
+  border-radius: 8px;
+  background-color: #f5faff;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.upload-area:hover {
+  background-color: #e3f2fd;
+}
+
+.upload-icon {
+  font-size: 36px;
+  color: #2196f3;
+}
+
+.upload-text {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  color: #555;
+  word-break: break-word;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.upload-btn {
+  min-width: 100%;
+}
+</style>
