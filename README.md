@@ -77,6 +77,8 @@ username: admin
 password: 123
 You may login and create your own account
 
+**The Main pages code is under /src/pages/...**
+
 Regards,
 Lo Jia Kai
 Email:lojiakai@gmail.com
