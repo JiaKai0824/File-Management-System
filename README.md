@@ -1,6 +1,7 @@
 File Management System
 Description
 This is a File Management System that allows users to upload, view, and download files. It has a role-based authentication system with two user roles: Admin and User. The Admin has additional privileges like creating users and deleting files, while Users are restricted to viewing and downloading files.
+*I download the existing Vue.js admin template and do modification here the link for the reference: https://www.creative-tim.com/product/vue-material-dashboard
 
 Features:
 Login System: Separate authentication for Admin and User.
@@ -76,6 +77,6 @@ username: admin
 password: 123
 You may login and create your own account
 
-Thanks, Regards
+Regards,
 Lo Jia Kai
 Email:lojiakai@gmail.com
